@@ -4,7 +4,7 @@ import 'dotenv/config'
 const validatorKey = process.env.VALIDATOR_PRIVATE_KEY
 const wallet = new ethers.Wallet(validatorKey);
 
-async function generateProof(data, timestamp) {
+async function ProofBuilder(data, timestamp) {
     const proofTimestamp = ethers.utils.hexZeroPad(
       ethers.utils.hexlify(Math.floor(timestamp.getTime() / 1000)),
       4
@@ -26,4 +26,4 @@ async function generateProof(data, timestamp) {
     return proof;
 }
 
-export default generateProof;
+export default ProofBuilder;
