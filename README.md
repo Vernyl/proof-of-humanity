@@ -14,6 +14,24 @@ Proof of Humanity is a bot protection services SDK integrated with the HUMAN Pro
    yarn test
    ```
 
+## Running the Humangram Bot Module
+To run the bot module and start using Humangram, follow these steps:
+
+1. Make sure you created and obtained the Telegram bot token from [BotFather](https://t.me/botfather).
+2. Open the .env file in your code editor.
+3. Add 'TELEGRAM_BOT_TOKEN' environment variable with your actual Telegram bot token obtained from BotFather.
+4. Save the changes.
+
+Now, you are ready to run the bot module using the command:
+
+```bash
+node bot.js
+```
+
+The bot will start running, and you can interact with it on Telegram to perform the Proof of Humanity actions.
+
+You can access our own Humangram bot [here](http://t.me/HumanityGuardBot).
+
 ## Contribution Guidelines
 
 To contribute to the project, please follow these steps:
