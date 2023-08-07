@@ -69,11 +69,11 @@ describe('Humangram API Endpoints', () => {
 describe('Biometrics API Endpoints', () => {
     it('POST /biometrics/proof should respond with a valid proof on successful validation', async () => {
         const data = "0x1234567890abcdef";
-        const worldcoinProof = "This is a test Worldcoin proof";
+        const authToken = "This is a test Worldcoin proof";
 
         const response = await request(app)
         .post('/biometrics/proof')
-        .send({ data, worldcoinProof });
+        .send({ data, authToken });
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('proof');
@@ -81,11 +81,11 @@ describe('Biometrics API Endpoints', () => {
 
     it('POST /biometrics/proof should respond with an error on failed validation', async () => {
         const data = "This is an invalid data should cause an error";
-        const worldcoinProof = "This is a test Worldcoin proof";
+        const authToken = "This is a test Worldcoin proof";
 
         const response = await request(app)
         .post('/biometrics/proof')
-        .send({ data, worldcoinProof });
+        .send({ data, authToken });
 
         expect(response.status).toBe(500);
         expect(response.body).toHaveProperty('error');
