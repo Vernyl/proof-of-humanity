@@ -5,6 +5,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+
+generator shadow {
+  provider = "prisma-client-js"
+  output   = "./generated/shadow"
+  url      = env("DATABASE_URL") // Use your existing database URL here
+}
+
+
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
