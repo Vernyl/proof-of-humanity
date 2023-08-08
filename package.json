@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose --detectOpenHandles"
   },
   "type": "module",
   "dependencies": {
