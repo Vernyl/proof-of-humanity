@@ -1,9 +1,12 @@
 {
-  "name": "poh-sdk",
+  "name": "poh-lib",
   "version": "0.0.1",
   "description": "Proof of Humanity with HUMAN Protocol - web3",
   "main": "index.js",
   "repository": "git@github.com:Vernyl/proof-of-humanity.git",
   "author": "Tolu Olugbesan",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "react": "^18.2.0"
+  }
 }
