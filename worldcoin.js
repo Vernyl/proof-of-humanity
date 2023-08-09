@@ -14,7 +14,14 @@ async function generateProof(data, worldcoinProof) {
 
   // For the Worldcoin validator, we assume that human verification is successful (set to true as a placeholder).
   // In a real-world implementation, this should be replaced with the actual verification logic.
-  const humanHasBeenVerified = true; // Placeholder: Replace with actual verification logic.
+  let humanHasBeenVerified = false; // Placeholder: Replace with actual verification logic.
+  const verify = await axios.post('https://developer.worldcoin.org/api/v1/verify', { action_id, ...worldcoinProof })
+  const result = verify.data
+
+  const { success } = result;
+  if (success) {
+    // User is now authenticated
+  }
 
   if (!humanHasBeenVerified) {
     return null;
