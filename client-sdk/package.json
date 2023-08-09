@@ -8,5 +8,8 @@
   "license": "MIT",
   "devDependencies": {
     "react": "^18.2.0"
+  },
+  "dependencies": {
+    "@worldcoin/idkit": "^0.5.1"
   }
 }
