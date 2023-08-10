@@ -1,8 +1,8 @@
 import React from 'react'
 
-function LedgerValidator() {
+function LedgerValidator({message}: {message: string}) {
   return (
-    <div>This is LedgerValidator</div>
+    <div>This is LedgerValidator - {message}</div>
   )
 }
 

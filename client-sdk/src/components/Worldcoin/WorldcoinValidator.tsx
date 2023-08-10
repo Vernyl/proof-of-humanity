@@ -1,8 +1,8 @@
 import React from 'react'
 
-function WorldcoinValidator() {
+function WorldcoinValidator({message}: {message: string}) {
   return (
-    <div>This is WorldcoinValidator</div>
+    <div>This is WorldcoinValidator - {message}</div>
   )
 }
 

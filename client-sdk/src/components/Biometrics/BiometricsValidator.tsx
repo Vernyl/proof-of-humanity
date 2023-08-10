@@ -1,8 +1,8 @@
 import React from 'react'
 
-function BiometricsValidator() {
+function BiometricsValidator({message}: {message: string}) {
   return (
-    <div>This is BiometricsValidator</div>
+    <div>'This is BiometricsValidator - {message}'</div>
   )
 }
 

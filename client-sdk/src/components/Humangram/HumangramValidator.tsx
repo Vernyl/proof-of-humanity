@@ -1,8 +1,8 @@
 import React from 'react'
 
-function HumangramValidator() {
+function HumangramValidator({message}: {message: string}) {
   return (
-    <div>This is HumangramValidator</div>
+    <div>This is HumangramValidator - {message}</div>
   )
 }
 
