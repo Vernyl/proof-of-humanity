@@ -20,4 +20,12 @@ export const createApiToken = async (data) => {
   return prisma.api.create({ data });
 };
 
+
+export default{
+  createUser,
+  createChannel,
+  createVouching,
+  createApiToken
+};
+
 // Add other CRUD methods as needed

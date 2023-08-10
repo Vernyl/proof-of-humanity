@@ -1,6 +1,11 @@
 import TelegramBot from 'node-telegram-bot-api';
-import db from './db.js'
+import db from "./db.js"
 import 'dotenv/config';
+// import { Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+// import { config } from 'dotenv';
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
@@ -39,17 +44,34 @@ bot.onText(/\/start/, async (msg) => {
     // Make sure to handle errors and closing the database connection properly.
 
     // const conn = await db.getConnection(config.db_url);
-    // const botUser = await db.getUserById(conn, userId);
-    // if (botUser === null) {
-    //   await db.insertUser(conn, userId);
-    // } else {
-    //   joinTime = botUser.join_time || joinTime;
-    //   score = botUser.score || score;
-    //   maxMembers = botUser.max_members || maxMembers;
-    //   oldestMessage = botUser.oldest_message || oldestMessage;
-    //   phoneNumber = botUser.phone_number || phoneNumber;
-    //   vouchedFor = botUser.vouched_for || vouchedFor;
-    // }
+    // const conn = await db.getConnection(process.env.DATABASE_URL)
+    const conn = await prisma.$connect();
+    const botUser = await prisma.user.findUnique({
+
+      where: {
+        user_id: userId
+      }
+    });
+
+    if (botUser === null) {
+      const user = await prisma.user.create({
+        user_id: userId,
+        join_time: joinTime,
+        score: score,
+        max_members: maxMembers,
+        oldest_message: oldestMessage,
+        phone_number: phoneNumber,
+        vouched_for: vouchedFor,
+      });
+    }else {
+      // Update variables from the existing user record
+      joinTime = botUser.join_time || joinTime;
+      score = botUser.score || score;
+      maxMembers = botUser.max_members || maxMembers;
+      oldestMessage = botUser.oldest_message || oldestMessage;
+      phoneNumber = botUser.phone_number || phoneNumber;
+      vouchedFor = botUser.vouched_for || vouchedFor;
+    }
     // db.closeConnection(conn);
 
     const keyboard = {
