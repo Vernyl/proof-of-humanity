@@ -1,15 +1,32 @@
 {
-  "name": "poh-lib",
+  "name": "poh-validators-react",
   "version": "0.0.1",
   "description": "Proof of Humanity with HUMAN Protocol - web3",
-  "main": "index.js",
+  "scripts": {
+    "rollup": "rollup --config"
+  },
   "repository": "git@github.com:Vernyl/proof-of-humanity.git",
   "author": "Tolu Olugbesan",
   "license": "MIT",
   "devDependencies": {
-    "react": "^18.2.0"
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "@types/react": "^18.2.20",
+    "postcss": "^8.4.27",
+    "react": "^18.2.0",
+    "rollup": "^3.28.0",
+    "rollup-plugin-dts": "^5.3.1",
+    "rollup-plugin-postcss": "^4.0.2",
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "@worldcoin/idkit": "^0.5.1"
-  }
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts"
 }
