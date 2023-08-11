@@ -15,7 +15,7 @@ function VerifyHuman(props: props) {
   return (
     <>  
       <div>VerifyHuman - A widget containing all the 4 ways to verify humanity</div>
-      <BiometricsValidator message={props.message1}/>
+      {/* <BiometricsValidator message={props.message1}/> */}
       <HumangramValidator message={props.message2}/>
       <LedgerValidator message={props.message3}/>
       {/* <WorldcoinValidator message={props.message4}/> */}
