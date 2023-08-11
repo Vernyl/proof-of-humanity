@@ -18,7 +18,7 @@ function VerifyHuman(props: props) {
       <BiometricsValidator message={props.message1}/>
       <HumangramValidator message={props.message2}/>
       <LedgerValidator message={props.message3}/>
-      <WorldcoinValidator message={props.message4}/>
+      {/* <WorldcoinValidator message={props.message4}/> */}
     </>
   )
 }

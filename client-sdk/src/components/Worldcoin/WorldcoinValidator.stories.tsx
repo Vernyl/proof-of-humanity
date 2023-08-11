@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import WorldcoinValidator from './WorldcoinValidator';
+import { IDKitWidget, CredentialType, ISuccessResult } from '@worldcoin/idkit'
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,9 +21,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function onVerify(result: ISuccessResult) {
+  console.log(result)
+}
+
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
-    message: 'From storybook...',
+    data: 'From storybook...',
+    // @ts-expect-error
+    app_id: import.meta.env.STORYBOOK_WORLDCOIN_APP_ID || '',
+    action: 'human-verification',
+    onVerify,
+    credential_types: [CredentialType.Orb, CredentialType.Phone],
   },
 };
