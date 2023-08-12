@@ -39,6 +39,8 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.16",
+    "@heroicons/react": "^2.0.18",
     "@passageidentity/passage-js": "^3.6.4",
     "@worldcoin/idkit": "^0.5.1"
   },
