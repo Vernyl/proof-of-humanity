@@ -9,18 +9,16 @@ import ProofBuilder from "./proof.js";
  */
 async function generateProof(data, worldcoinProof) {
   // Worldcoin humanity verification logic
-  // The parameters required to be passed into the generateProof() function to validate humanity might
-  // be different for each validator. These parameters are deduced from the verification process.
+  
+  let humanHasBeenVerified = false;
 
-  // For the Worldcoin validator, we assume that human verification is successful (set to true as a placeholder).
-  // In a real-world implementation, this should be replaced with the actual verification logic.
-  let humanHasBeenVerified = false; // Placeholder: Replace with actual verification logic.
-  const verify = await axios.post('https://developer.worldcoin.org/api/v1/verify', { action_id, ...worldcoinProof })
+  const verify = await axios.post('https://developer.worldcoin.org/api/v1/verify', { action_id: process.env.WORLDCOIN_ACTION_ID, ...worldcoinProof })
   const result = verify.data
 
   const { success } = result;
   if (success) {
     // User is now authenticated
+    humanHasBeenVerified = true;
   }
 
   if (!humanHasBeenVerified) {
