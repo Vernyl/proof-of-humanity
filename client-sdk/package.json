@@ -35,7 +35,8 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@worldcoin/idkit": "^0.5.1"
+    "@worldcoin/idkit": "^0.5.1",
+    "@passageidentity/passage-js": "^3.6.4"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
