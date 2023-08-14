@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+
+generator shadow {
+  provider = "prisma-client-js"
+  output   = "./generated/shadow"
+  url      = env("DATABASE_URL") // Use your existing database URL here
+}
+
+
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id          Int         @id @default(autoincrement())
+  join_time        DateTime    @default(now())
+  score            Int         @default(0)
+  max_members      Int         @default(0)
+  oldest_message   Int         @default(0)
+  phone_number     String?     @db.VarChar(16)
+  vouched_for      Int         @default(0)
+  external_id      String?     @unique
+  channels         Channel[]
+  vouchingAsVoucher Vouching[] @relation("Voucher")
+  vouchingAsVouched Vouching[] @relation("VouchedFor")
+}
+
+model Channel {
+  channel_id       Int      @id @default(autoincrement())
+  user_id          Int
+  members          Int
+  association_time DateTime @default(now())
+  user             User     @relation(fields: [user_id], references: [user_id])
+}
+
+model Vouching {
+  voucher      Int       @map("voucher")
+  vouched_for  Int       @map("vouched_for")
+  status       String    @default("V")
+  vouching_time DateTime  @default(now())
+  vouchingAsVoucher User @relation("Voucher", fields: [voucher], references: [user_id])
+  vouchingAsVouchedFor User @relation("VouchedFor", fields: [vouched_for], references: [user_id])
+  @@id([voucher, vouched_for])
+}
+
+model Api {
+  token String @id
+  quota Int    @default(-1)
+}
+

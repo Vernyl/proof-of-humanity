@@ -1,30 +1,42 @@
+import Passage from "@passageidentity/passage-node";
 import ProofBuilder from "./proof.js";
 
 /**
  * Generates a signed proof after a user has been validated by biometrics.
  *
  * @param {object} data - The random data to be used for unique proof generation.
- * @param {string} authToken - The Biometrics proof that verifies the success of the human verification.
+ * @param {string} token - The Biometrics proof that verifies the success of the human verification.
  * @returns {Promise<object|null>} - The generated validator signed proof object, or null if the human verification fails.
  */
-async function generateProof(data, authToken) {
+async function generateProof(data, token) {
   // Biometrics humanity verification logic
-  // The parameters required to be passed into the generateProof() function to validate the humanity might
-  // be different for each validator. These parameters are deduced from the verification process.
 
-  // For the Biometrics validator, we assume that human verification is successful (set to true as a placeholder).
-  // In a real-world implementation, this should be replaced with the actual verification logic.
   let humanHasBeenVerified = false; 
-  const user = await passage.validAuthToken(authToken);
 
-        console.log(user);
+  // Passage requires an App ID and, optionally, an API Key
+const passageConfig = {
+  appID: process.env.PASSAGE_APP_ID,
+  apiKey: process.env.PASSAGE_API_KEY,
+};
 
-        if (user) {
-            // User is now authenticated 
-        }
+// Authentication using Passage class instance
+let passage = new Passage(passageConfig);
 
-        if (!humanHasBeenVerified) {
-            return null;
+  try {
+    // Validate token using Passage class instance
+    const userID = await passage.validAuthToken(token);
+    if (userID) {
+      //authenticated
+      humanHasBeenVerified = true;
+    }
+  } catch (e) {
+    // Authentication failed
+    console.log(e);
+    res.send("User could not be validated!");
+  }
+
+  if (!humanHasBeenVerified) {
+      return null;
   }
 
   // If the verification process is successful, a signed proof will be generated.

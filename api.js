@@ -46,8 +46,8 @@ app.post('/humangram/proof', async (req, res) => {
 // Endpoint for generating a proof using Biometrics validator
 app.post('/biometrics/proof', async (req, res) => {
   try {
-    const { data, authToken } = req.body;
-    const proof = await biometrics.generateProof(data, authToken);
+    const { data, token } = req.body;
+    const proof = await biometrics.generateProof(data, token);
     res.json({ proof });
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while generating the proof.' });
