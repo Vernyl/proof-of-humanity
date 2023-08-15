@@ -12,14 +12,35 @@ async function generateProof(data, worldcoinProof) {
   
   let humanHasBeenVerified = false;
 
-  const verify = await axios.post('https://developer.worldcoin.org/api/v1/verify', { action_id: process.env.WORLDCOIN_ACTION_ID, ...worldcoinProof })
-  const result = verify.data
+  // const verify = await axios.post(`https://developer.worldcoin.org/api/v1/verify${process.env.WORLDCOIN_APP_ID}`, { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof })
+  // const result = verify.data
+  const reqBody = { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof }
+  fetch(`https://developer.worldcoin.org/api/v1/verify/${process.env.WORLDCOIN_APP_ID}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqBody), 
+  }).then((verifyRes) => {
+    verifyRes.json().then((wldResponse) => {
+      if (verifyRes.status == 200) {
+        humanHasBeenVerified = true;
+        res.status(verifyRes.status).send({ code: "success" });
+      } else {
+        // return the error code and detail from the World ID /verify endpoint to our frontend
+        res.status(verifyRes.status).send({ 
+          code: wldResponse.code, 
+          detail: wldResponse.detail 
+        });
+      }
+    });
+  });
 
-  const { success } = result;
-  if (success) {
-    // User is now authenticated
-    humanHasBeenVerified = true;
-  }
+  // const { success } = result;
+  // if (success) {
+  //   // User is now authenticated
+  //   humanHasBeenVerified = true;
+  // }
 
   if (!humanHasBeenVerified) {
     return null;
