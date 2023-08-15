@@ -9,7 +9,7 @@ interface validatorProps {
   credential_types: CredentialType[],
 }
 
-function WorldcoinValidator({ data, app_id, action, onVerify, credential_types}: validatorProps) {
+function WorldcoinValidator({ data, app_id, action, onVerify, credential_types=[CredentialType.Orb, CredentialType.Phone]}: validatorProps) {
 
   const handleVerify = async (worldcoinProof: ISuccessResult) => {
     console.log(worldcoinProof)
