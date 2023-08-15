@@ -11,9 +11,7 @@ async function generateProof(data, worldcoinProof) {
   // Worldcoin humanity verification logic
   
   let humanHasBeenVerified = false;
-
-  // const verify = await axios.post(`https://developer.worldcoin.org/api/v1/verify${process.env.WORLDCOIN_APP_ID}`, { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof })
-  // const result = verify.data
+  
   const reqBody = { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof }
   fetch(`https://developer.worldcoin.org/api/v1/verify/${process.env.WORLDCOIN_APP_ID}`, {
     method: "POST",
@@ -36,11 +34,6 @@ async function generateProof(data, worldcoinProof) {
     });
   });
 
-  // const { success } = result;
-  // if (success) {
-  //   // User is now authenticated
-  //   humanHasBeenVerified = true;
-  // }
 
   if (!humanHasBeenVerified) {
     return null;
