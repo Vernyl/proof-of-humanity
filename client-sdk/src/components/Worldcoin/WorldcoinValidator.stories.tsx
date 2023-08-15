@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import WorldcoinValidator from './WorldcoinValidator';
 import { IDKitWidget, CredentialType, ISuccessResult } from '@worldcoin/idkit'
 
@@ -32,7 +33,7 @@ export const Primary: Story = {
     // @ts-expect-error
     app_id: import.meta.env.STORYBOOK_WORLDCOIN_APP_ID || '',
     action: 'human-verification',
-    onVerify,
-    credential_types: [CredentialType.Orb, CredentialType.Phone],
+    url: 'localhost:3000/worldcoin/proof',
+    onProof: action('onProof'),
   },
 };
