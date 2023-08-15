@@ -1,8 +1,8 @@
 import React from 'react'
-
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/24/outline'
+
+// Note: Debugging our package size and it seems like the headlessui dependency here is adding almost 7mb to our build resulting in the whole npm package being 20mb
 
 function HumangramValidator() {
   const [open, setOpen] = useState(false)
@@ -42,7 +42,6 @@ function HumangramValidator() {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                 <div>
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#29A9EA]">
-                    {/* <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" /> */}
                     <svg className="h-10 w-10" aria-hidden="true" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="17" cy="17" r="17" fill="#F2F2FA"></circle>
                       <g clip-path="url(#clip0_4696_10105)" fill="none">

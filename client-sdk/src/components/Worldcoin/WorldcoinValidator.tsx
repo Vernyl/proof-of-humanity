@@ -1,6 +1,8 @@
 import React from 'react'
 import { IDKitWidget, CredentialType, ISuccessResult } from '@worldcoin/idkit'
 
+// Note: There's a problem somewhere, Node is saying Circular dependencies, and this module is adding 16.5mb to our build resulting in the whole npm package being 20mb
+
 interface validatorProps {
   data: any,
   app_id: string,

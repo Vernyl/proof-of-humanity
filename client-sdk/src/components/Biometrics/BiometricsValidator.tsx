@@ -3,6 +3,8 @@ import { Passage } from "@passageidentity/passage-js";
 import axios from 'axios';
 import { ethers } from 'ethers';
 
+// Note: This module is adding 2.64mb to our build resulting in the whole npm package being 20mb
+
 interface BiometricsValidator {
   app_id: string;
   onProof: (data: { proof: string | null, error: string | null }) => void;
