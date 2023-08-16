@@ -1,53 +1,94 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IDKitWidget, CredentialType, ISuccessResult } from '@worldcoin/idkit'
+import axios from 'axios';
+import { ethers } from 'ethers';
 
 // Note: There's a problem somewhere, Node is saying Circular dependencies, and this module is adding 16.5mb to our build resulting in the whole npm package being 20mb
 
-interface validatorProps {
-  data: any,
-  app_id: string,
-  action: string,
-  onVerify: (result: any) => void,
-  credential_types: CredentialType[],
+interface WorldcoinValidator {
+  data: any;
+  app_id: string;
+  action: string;
+  onProof: (data: { proof: string | null, error: string | null }) => void;
+  url: string;
 }
 
-function WorldcoinValidator({ data, app_id, action, onVerify, credential_types=[CredentialType.Orb, CredentialType.Phone]}: validatorProps) {
+interface worldcoinProof {
+	"merkle_root": string;
+	"nullifier_hash": string;
+	"proof": string;
+	"credential_type": string;
+}
 
-  const handleVerify = async (worldcoinProof: ISuccessResult) => {
-    console.log(worldcoinProof)
+
+function WorldcoinValidator({ app_id, action, onProof, url }: WorldcoinValidator) {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getProof = async (worldcoinProof: worldcoinProof) => {
+    setIsLoading(true);
+    
+    const randomChallenge = ethers.utils.hexlify(
+      ethers.utils.randomBytes(32)
+    );
+
     try {
-      const reqBody = { data: data, worldcoinProof: worldcoinProof };
-      const response = await fetch('/worldcoin/proof', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(reqBody),
+      const response = await axios.post(url, {
+        data: randomChallenge,
+        worldcoinProof: worldcoinProof
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate proof.');
+  
+      if (response.data && response.data.proof) {
+        onProof({ proof: response.data.proof, error: null });
+        console.log(response.data.proof);
+      } else {
+        onProof({ proof: null, error: 'Failed to fetch proof from the API.' });
       }
-
-      const result = await response.json();
-      console.log('Proof generated:', result.proof);
-
-      // You can perform further actions here based on the proof result
-    } catch (error) {
-      console.error('An error occurred:', error);
-      // Handle the error gracefully, e.g., display an error message to the user
+    } catch (err) {
+      onProof({ proof: null, error: 'An error occurred while fetching the proof.' });
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
+
+  // const handleVerify = async (worldcoinProof: ISuccessResult) => {
+  //   console.log(worldcoinProof)
+  //   try {
+  //     const reqBody = { data: data, worldcoinProof: worldcoinProof };
+  //     const response = await fetch(url, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(reqBody),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to generate proof.');
+  //     }
+
+  //     const result = await response.json();
+  //     console.log('Proof generated:', result.proof);
+
+  //     // You can perform further actions here based on the proof result
+  //   } catch (error) {
+  //     console.error('An error occurred:', error);
+  //     // Handle the error gracefully, e.g., display an error message to the user
+  //   }
+  // };
 
   const onSuccess = (result: ISuccessResult) => {
     console.log(result)
+    getProof(result);
+
   }
   return (
     <IDKitWidget
       app_id={app_id} // obtained from the Developer Portal
-      action="vote_1" // this is your action name from the Developer Portal
+      action={action} // this is your action name from the Developer Portal
       onSuccess={onSuccess} // callback when the modal is closed
-      handleVerify={handleVerify} // optional callback when the proof is received
+      // handleVerify={handleVerify} // optional callback when the proof is received
       credential_types={[CredentialType.Orb, CredentialType.Phone]} // optional, defaults to ['orb']
       enableTelemetry // optional, defaults to false
     >

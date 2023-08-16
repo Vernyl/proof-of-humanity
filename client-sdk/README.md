@@ -27,17 +27,17 @@ yarn add poh-validators-react
 
  
 
-Currently, the only available validator is:
+Currently, the only available validators are:
 
  
+- `HumangramValidator` - Enables Proof of Humanity verification via the Humangram Telegram bot.
 
-- `BiometricsValidator` - a biometrics verification tool that provides a seamless user experience. It's currently facing issues initializing on mobile devices.
+- `BiometricsValidator` - Advanced on-device biometrics verification for a seamless experience. Please note, there are known issues with initialization on some mobile devices.
 
  
 
 Future versions will introduce.
 - `WorldcoinValidator`
-- `HumangramValidator`
 - `LedgerValidator`
 
  
@@ -74,9 +74,27 @@ function MyApp() {
 }
 ```
 
- 
+### 2. Integrating the Humangram Validator
 
-### 2. Using a validator signed proof to access contract function
+To use the `HumangramValidator`, follow this pattern:
+
+```javascript
+import { HumangramValidator } from 'poh-validators-react';
+
+function MyApp() {
+    const handleProof = (data) => {
+        // Handle the received proof or error here
+    }
+
+    return (
+        <div>
+            <HumangramValidator onProof={handleProof} websocket="[YOUR_WEBSOCKET_URL]" />
+        </div>
+    );
+}
+```  
+
+### 3. Using a validator signed proof to access contract function
 
  
 
@@ -104,19 +122,18 @@ const handleProof = async ({ proof, error }) => {
     }
   }
 ```
-See [poh-contracts](https://www.npmjs.com/package/poh-contracts) on how to use proof in your smart contract
+See [poh-contracts](https://www.npmjs.com/package/poh-contracts) on how to use proof in your smart contracts.
 
  
 
-### Support for more validators is coming soon!
-Easily enable more that one method to verify humans in your dapp
+### 4. Support for more validators is coming soon!
+Enable more that one method to verify humans in your dApp
 
  
 
 ```javascript
 import { BiometricsValidator, WorldcoinValidator, HumangramValidator} from 'poh-validators-react';
 
- 
 
 function MyApp() {
     const handleProof = {}
@@ -131,11 +148,21 @@ function MyApp() {
 }
 ```
 
- 
+## Validator Backend
+
+All validators leverage a unified open-source backend project to ensure seamless human verification.
+
+You can integrate the validator backend into your projects and tailor it to your specific needs. Supported language: `Node.js`
+
+- [Proof Of Humanity](https://github.com/Vernyl/proof-of-humanity) validator backend
+
+Please ensure you follow the setup guidelines carefully to guarantee proper functionality and security.
+
+We are actively exploring the possibility of offering Verification as a Service (VaaS) in the future, further simplifying the integration process.
+
 
 ## Props
 
- 
 
 For the `BiometricsValidator` component:
 
@@ -148,6 +175,13 @@ For the `BiometricsValidator` component:
 | `url`    | Required          | The API URL for the validator.                                     | N/A     |
 
  
+For the `HumangramValidator` component:
+
+| Prop        | Required/Optional | Description                                                        | Default Value  |
+|-------------|-------------------|--------------------------------------------------------------------|----------------|
+| `onProof`   | Required          | Callback function when a proof is received or an error occurs.     | N/A            |
+| `websocket` | Required          | The websocket URL for the validator.                               | N/A            |
+
 
 ## Notes
 

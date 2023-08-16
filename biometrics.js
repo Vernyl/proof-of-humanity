@@ -41,7 +41,7 @@ let passage = new Passage(passageConfig);
 
   // If the verification process is successful, a signed proof will be generated.
   // See ./proof.js for the implementation details.
-  const proof = ProofBuilder(data);
+  const proof = await ProofBuilder(data);
 
   return proof;
 }

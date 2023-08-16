@@ -1,7 +1,69 @@
 import TelegramBot from 'node-telegram-bot-api';
-import db from './db.js'
+// import db from './db.js'
 import 'dotenv/config';
 import config from './poh.config.js';
+import express from 'express';
+import cors from 'cors';
+import { Server } from 'socket.io';
+import ProofBuilder from './proof.js';
+
+const app = express();
+const PORT = 1337;
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Middleware to parse JSON request bodies
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Proof of Humanity' });
+});
+
+const server = app.listen(PORT, () => {
+  console.log(`Web socket running on port ${PORT}`);
+})
+
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow any origin to access, or specify a whitelist of origins
+    methods: ["GET", "POST"]
+  }
+});
+
+const clients = {}; 
+
+let awaitingMagicCode = {};
+
+const MAX_RETRIES = 3; 
+
+function extractMagicCode(socketId, numberOfDigits = 4) {
+  // Extract the first characters
+  return socketId.slice(0, numberOfDigits);
+}
+
+io.on('connection', (socket) => {
+console.log('a user connected');
+
+const magicCode = extractMagicCode(socket.id);
+
+// Send this magic code to the client, so they know what to provide to the Telegram bot
+socket.on('requestMagicCode', () => {
+  socket.emit('magicCode', magicCode);
+});
+
+socket.on('sendChallenge', (randomChallenge) => {
+
+  // Store both the challenge and the magic code in the object
+  clients[socket.id] = {
+    id: socket.id,
+    challenge: randomChallenge,
+    magicCode: magicCode
+  };
+
+});
+});
+
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const { humangram: humangramConfig} = config.validator;
@@ -58,30 +120,45 @@ bot.onText(/\/start/, async (msg) => {
       inline_keyboard: [
         [
           { text: 'Share your phone number', callback_data: 'number' },
-          { text: 'Forward an old message', callback_data: 'forward' }
+          // { text: 'Share your phone number', callback_data: 'number' },
+          // { text: 'Forward an old message', callback_data: 'forward' }
         ],
-        [
-          { text: 'Verify channel ownership', callback_data: 'channel' },
-          { text: 'Get vouched for by others', callback_data: 'voucher' }
-        ]
+        // [
+        //   { text: 'Verify channel ownership', callback_data: 'channel' },
+        //   { text: 'Get vouched for by others', callback_data: 'voucher' }
+        // ]
       ]
     };
 
     const displayName = msg.from.username ? `@${msg.from.username}` : `${msg.from.first_name}`;
 
-    const message = `*Welcome ${displayName}!*
-Use this bot to prove you are a human. Your current stats:
+//     const message = `*Welcome ${displayName}!*
+// Use this bot to prove you are a human. Your current stats:
 
-*Humanity proof score*: ${score}
-*Phone number*: ${phoneNumber ? phoneNumber : 'N/A'}
-*Oldest message*: ${oldestMessage} days ago
-*Highest members in your channels*: ${maxMembers}
-*People vouched for your humanity*: ${vouchedFor}
-*First seen here*: ${readableJoinTime}
+// *Humanity proof score*: ${score}
+// *Phone number*: ${phoneNumber ? phoneNumber : 'N/A'}
+// *Oldest message*: ${oldestMessage} days ago
+// *Highest members in your channels*: ${maxMembers}
+// *People vouched for your humanity*: ${vouchedFor}
+// *First seen here*: ${readableJoinTime}
 
-Check your score anytime by sending /start here.
+// Check your score anytime by sending /start here.
 
-Increase your humanity proof score by completing tasks:`;
+// Increase your humanity proof score by completing tasks:`;
+
+const message =`*Welcome ${displayName}!*
+
+Humangram uses social media proof to verify your humanity. Here's your current verification status:
+
+- 📱 *Phone number*: ${phoneNumber ? phoneNumber : 'N/A'}
+
+- 📩 *Oldest message*: ${oldestMessage} days ago
+
+- 🗓️ *First seen here*: ${readableJoinTime}
+
+Ensure your phone number remains valid to stay verified. 
+
+ℹ️ _Note: Other methods of verification are in beta and will be available soon._`
 
     await bot.sendMessage(msg.chat.id, message, {
         parse_mode: 'Markdown',
@@ -105,10 +182,11 @@ bot.on('callback_query', async (query) => {
             resize_keyboard: true,
             one_time_keyboard: true,
         };
-        const message = `📱 *Share your phone number* to complete this task.
+//         const message = `📱 *Share your phone number* to complete this task.
         
-You'll *earn ${humangramConfig.phoneNumberScore} points*.
-`;
+// You'll *earn ${humangramConfig.phoneNumberScore} points*.
+// `;   
+        const message = 'Please verify:'
         await bot.sendMessage(query.message.chat.id, message, {
         parse_mode: 'Markdown',
         reply_markup: keyboard,
@@ -166,5 +244,48 @@ You'll *earn ${humangramConfig.phoneNumberScore} points*.
       }
   
 });
-  
 
+bot.on('contact', async (msg) => {
+  const userId = msg.from.id;
+  const phoneNumber = msg.contact.phone_number;
+
+  if (phoneNumber) {
+    await bot.sendMessage(msg.chat.id, "Thank you for sharing your number. Please send your magic code next.");
+    // Mark the user as awaiting magic code
+    awaitingMagicCode[userId] = { awaiting: true, retries: 0 };
+  } else {
+    // Handle cases where the phone number isn't shared, if needed
+  }
+});
+
+
+// Listen for all messages to capture the magic code
+bot.on('message', async (msg) => {
+  const userId = msg.from.id;
+
+  // If this user was awaiting to send a magic code
+  if (awaitingMagicCode[userId] && awaitingMagicCode[userId].awaiting) {
+    const magicCodeFromUser = msg.text;
+    const socketId = Object.keys(clients).find(
+      id => clients[id].magicCode === magicCodeFromUser
+    );
+
+    if (socketId) {
+      const challenge = clients[socketId].challenge;
+      const proof = await ProofBuilder(challenge);
+      io.emit('userPhoneNumber', proof); // Adjust to send to a specific client if io.to(socketId) is fixed
+      delete clients[socketId];  // Remove the challenge and magic code since they've been used
+
+      await bot.sendMessage(msg.chat.id, "Magic code accepted and verification is complete!");
+      delete awaitingMagicCode[userId];
+    } else {
+      awaitingMagicCode[userId].retries += 1;
+      if (awaitingMagicCode[userId].retries < MAX_RETRIES) {
+        await bot.sendMessage(msg.chat.id, `Invalid magic code. Please try again. You have ${MAX_RETRIES - awaitingMagicCode[userId].retries} attempts left.`);
+      } else {
+        await bot.sendMessage(msg.chat.id, "You have exceeded the maximum number of attempts. Please restart the verification process.");
+        delete awaitingMagicCode[userId];
+      }
+    }
+  }
+});
