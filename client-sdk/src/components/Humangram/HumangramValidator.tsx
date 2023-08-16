@@ -15,6 +15,7 @@ interface HumangramValidator {
 function HumangramValidator({onProof, websocket}: HumangramValidator) {
   const [open, setOpen] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [magicCode, setMagicCode] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,19 +31,36 @@ function HumangramValidator({onProof, websocket}: HumangramValidator) {
     }
   };
 
-  // Initialize the socket connection when the component mounts
   useEffect(() => {
     if (open) {
-      setIsLoading(true)
-      const newSocket = io(websocket);
-      setSocket(newSocket);
-      sendChallengeToServer()
-    
-      return () => {
-        newSocket.close();
-      };
+        setIsLoading(true);
+        
+        const initializeSocket = async () => {
+            const newSocket = io(websocket);
+            setSocket(newSocket);
+
+            // Iintroducing a slight delay to ensure socket initialization
+            // Not a recommended practice but can be a temporary fix -- sometimes client is not able to send random challenge to server
+            await new Promise(res => setTimeout(res, 100));
+
+            socket?.on('magicCode', (code) => {
+              console.log(code)
+              setMagicCode(code);
+            })
+
+            // Explicitly request the magicCode
+            socket?.emit('requestMagicCode');
+
+            sendChallengeToServer();
+        };
+        
+        initializeSocket();
+
+        return () => {
+            socket?.close();
+        };
     }
-  }, [open]);
+}, [open]);
 
 
   // Add socket listeners once socket instance is set
@@ -125,7 +143,7 @@ function HumangramValidator({onProof, websocket}: HumangramValidator) {
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Proof of Humanity verification bot provided by HUMAN Protocol
+                        Proof of Humanity verification bot. Your magic code is <strong>{magicCode}</strong>
                       </p>
                     </div>
                   </div>

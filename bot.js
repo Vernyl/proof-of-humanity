@@ -31,17 +31,40 @@ const io = new Server(server, {
   }
 });
 
-const clientChallenges = {}; 
+const clients = {}; 
+
+let awaitingMagicCode = {};
+
+function extractMagicCode(socketId, numberOfDigits = 4) {
+  // Extract the first characters
+  return socketId.slice(0, numberOfDigits);
+}
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+console.log('a user connected');
 
-  socket.on('sendChallenge', (randomChallenge) => {
-    // Process the received challenge
-    console.log("Received challenge:", randomChallenge);
-    clientChallenges[socket.id] = randomChallenge;
-  });
-})
+const magicCode = extractMagicCode(socket.id);
+console.log("Generated magic code for socket:", magicCode);
+
+// Send this magic code to the client, so they know what to provide to the Telegram bot
+socket.on('requestMagicCode', () => {
+  socket.emit('magicCode', magicCode);
+});
+
+socket.on('sendChallenge', (randomChallenge) => {
+  console.log("Received challenge:", randomChallenge);
+
+  // Store both the challenge and the magic code in the object
+  clients[socket.id] = {
+    id: socket.id,
+    challenge: randomChallenge,
+    magicCode: magicCode
+  };
+
+  console.log(clients[socket.id]);
+});
+});
+
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const { humangram: humangramConfig} = config.validator;
@@ -207,24 +230,43 @@ You'll *earn ${humangramConfig.phoneNumberScore} points*.
   
 });
 
-bot.on('contact', (msg) => {
+bot.on('contact', async (msg) => {
   const userId = msg.from.id;
   const phoneNumber = msg.contact.phone_number;
 
   if (phoneNumber) {
-    // Find the clientId that matches the challenge used for the proof
-    for (const [socketId, challenge] of Object.entries(clientChallenges)) {
-      const proof = ProofBuilder(challenge);
-      io.to(socketId).emit('userPhoneNumber', proof);
-      delete clientChallenges[socketId];  // Remove the challenge since it's been used
-      break;
-    } 
+    await bot.sendMessage(msg.chat.id, "Thank you for sharing your number. Please send your magic code next.");
+    // Mark the user as awaiting magic code
+    awaitingMagicCode[userId] = true;
   } else {
-    io.emit('userPhoneNumber', null);  // You might want to send this only to the specific client
+    // Handle cases where the phone number isn't shared, if needed
   }
-  
 });
 
 
-  
+// Listen for all messages to capture the magic code
+bot.on('message', async (msg) => {
+  const userId = msg.from.id;
 
+  // If this user was awaiting to send a magic code
+  if (awaitingMagicCode[userId]) {
+    const magicCodeFromUser = msg.text;
+    const socketId = Object.keys(clients).find(
+      id => clients[id].magicCode === magicCodeFromUser
+    );
+
+    if (socketId) {
+      const challenge = clients[socketId].challenge;
+      const proof = await ProofBuilder(challenge);
+      io.emit('userPhoneNumber', proof); // Adjust to send to a specific client if io.to(socketId) is fixed
+      delete clients[socketId];  // Remove the challenge and magic code since they've been used
+
+      await bot.sendMessage(msg.chat.id, "Magic code accepted and verification is complete!");
+    } else {
+      await bot.sendMessage(msg.chat.id, "Invalid magic code. Please try again.");
+    }
+
+    // Unmark the user from awaitingMagicCode
+    delete awaitingMagicCode[userId];
+  }
+});
