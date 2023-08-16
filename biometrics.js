@@ -5,7 +5,7 @@ import ProofBuilder from "./proof.js";
  * Generates a signed proof after a user has been validated by biometrics.
  *
  * @param {object} data - The random data to be used for unique proof generation.
- * @param {string} token - The Biometrics proof that verifies the success of the human verification.
+ * @param {string} token - The authentication token that verifies the success of the human verification.
  * @returns {Promise<object|null>} - The generated validator signed proof object, or null if the human verification fails.
  */
 async function generateProof(data, token) {
