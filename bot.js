@@ -1,7 +1,47 @@
 import TelegramBot from 'node-telegram-bot-api';
-import db from './db.js'
+// import db from './db.js'
 import 'dotenv/config';
 import config from './poh.config.js';
+import express from 'express';
+import cors from 'cors';
+import { Server } from 'socket.io';
+import ProofBuilder from './proof.js';
+
+const app = express();
+const PORT = 1337;
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Middleware to parse JSON request bodies
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Proof of Humanity' });
+});
+
+const server = app.listen(PORT, () => {
+  console.log(`Web socket running on port ${PORT}`);
+})
+
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow any origin to access, or specify a whitelist of origins
+    methods: ["GET", "POST"]
+  }
+});
+
+const clientChallenges = {}; 
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('sendChallenge', (randomChallenge) => {
+    // Process the received challenge
+    console.log("Received challenge:", randomChallenge);
+    clientChallenges[socket.id] = randomChallenge;
+  });
+})
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const { humangram: humangramConfig} = config.validator;
@@ -166,5 +206,25 @@ You'll *earn ${humangramConfig.phoneNumberScore} points*.
       }
   
 });
+
+bot.on('contact', (msg) => {
+  const userId = msg.from.id;
+  const phoneNumber = msg.contact.phone_number;
+
+  if (phoneNumber) {
+    // Find the clientId that matches the challenge used for the proof
+    for (const [socketId, challenge] of Object.entries(clientChallenges)) {
+      const proof = ProofBuilder(challenge);
+      io.to(socketId).emit('userPhoneNumber', proof);
+      delete clientChallenges[socketId];  // Remove the challenge since it's been used
+      break;
+    } 
+  } else {
+    io.emit('userPhoneNumber', null);  // You might want to send this only to the specific client
+  }
+  
+});
+
+
   
 

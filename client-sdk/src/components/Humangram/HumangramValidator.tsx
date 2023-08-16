@@ -1,11 +1,74 @@
 import React from 'react'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { io, Socket } from 'socket.io-client';
+import { ethers } from 'ethers';
+
 
 // Note: Debugging our package size and it seems like the headlessui dependency here is adding almost 7mb to our build resulting in the whole npm package being 20mb
 
-function HumangramValidator() {
-  const [open, setOpen] = useState(false)
+interface HumangramValidator {
+  onProof: (data: { proof: string | null, error: string | null }) => void;
+  websocket: string;
+}
+
+function HumangramValidator({onProof, websocket}: HumangramValidator) {
+  const [open, setOpen] = useState(false);
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const sendChallengeToServer = async () => {
+    const randomChallenge = ethers.utils.hexlify(
+        ethers.utils.randomBytes(32)
+    );
+
+    // Emit challenge to the server
+    if (socket) {
+      socket.emit('sendChallenge', randomChallenge);
+    }
+  };
+
+  // Initialize the socket connection when the component mounts
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true)
+      const newSocket = io(websocket);
+      setSocket(newSocket);
+      sendChallengeToServer()
+    
+      return () => {
+        newSocket.close();
+      };
+    }
+  }, [open]);
+
+
+  // Add socket listeners once socket instance is set
+  useEffect(() => {
+      if (socket) {
+        const eventHandler = (proof: string) => {
+          setError(null);
+          console.log('Received phone number:', proof);
+          if (proof) {
+              onProof({ proof: proof, error: null });
+          } else {
+              const message = 'Failed to fetch proof from the server.';
+              onProof({ proof: null, error: message });
+              setError(message);
+          }
+
+          setIsLoading(false);
+      };
+
+      socket.on('userPhoneNumber', eventHandler)
+
+      return () => {
+        socket.off('userPhoneNumber', eventHandler)
+      }
+    }
+  }, [socket]);
 
   return (
     <>
