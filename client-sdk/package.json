@@ -1,6 +1,6 @@
 {
   "name": "poh-validators-react",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Proof of Humanity with HUMAN Protocol - web3",
   "scripts": {
     "rollup": "rollup --config",
