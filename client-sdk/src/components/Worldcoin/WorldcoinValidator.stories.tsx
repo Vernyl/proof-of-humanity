@@ -29,11 +29,12 @@ function onVerify(result: ISuccessResult) {
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
-    data: 'From storybook...',
     // @ts-expect-error
     app_id: import.meta.env.STORYBOOK_WORLDCOIN_APP_ID || '',
-    action: 'human-verification',
-    url: 'localhost:3000/worldcoin/proof',
+    // @ts-expect-error
+    action: import.meta.env.STORYBOOK_WORLDCOIN_ACTION_NAME,
+    // @ts-expect-error
+    url: import.meta.env.STORYBOOK_WORLDCOIN_VALIDATOR_URL,
     onProof: action('onProof'),
   },
 };

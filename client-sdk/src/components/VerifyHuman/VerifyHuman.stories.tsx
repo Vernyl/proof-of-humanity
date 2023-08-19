@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import VerifyHuman from './VerifyHuman';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -23,9 +24,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
-    message1: 'From storybook1...',
-    message2: 'From storybook2...',
-    message3: 'From storybook3...',
-    message4: 'From storybook4...',
+    start: true,
+    onProof: action('onProof'),
   },
 };

@@ -26,7 +26,8 @@ export const Primary: Story = {
   args: {
     // @ts-expect-error
     app_id: import.meta.env.STORYBOOK_PASSAGE_APP_ID || '',
-    url: 'localhost:3000/biometrics/proof',
+    // @ts-expect-error
+    url: import.meta.env.STORYBOOK_BIOMETRICS_VALIDATOR_URL || '',
     onProof: action('onProof'),
   },
 };
