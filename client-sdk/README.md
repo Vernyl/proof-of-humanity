@@ -36,7 +36,7 @@ Future versions will introduce:
 
 We've introduced a new component, `<VerifyHuman />`, which acts as a plug-and-play solution for all the current methods of validation we support. This component simplifies the process of integrating multiple validators into your application. 
 
-![Example Image](./src/assets/human-2.png)
+![Example Image](./src/assets/human-2.png?raw=true)
 
 - **Configuration**: Before using the `<VerifyHuman />` component, ensure you have a `poh.config.js` file set up in your project. This configuration file will contain details about the validators you want to use.
 
