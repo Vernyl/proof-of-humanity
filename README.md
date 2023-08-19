@@ -2,6 +2,8 @@
 
 Proof of Humanity is a bot protection services SDK integrated with the HUMAN Protocol. Utilize our SDK for backend verification, then implement our [`poh-validators-react`](https://npmjs.com/package/poh-validators-react) package to effortlessly embed human verification components in your React frontend.
 
+![Example Image](./client-sdk/src/assets/human-2.png)
+
 ## 📚 SDK Documentation (Beta)
 
 While we're perfecting our SDK documentation, you can delve into our current [Beta Documentation](https://poh-docs.netlify.app/).
