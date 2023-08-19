@@ -14,7 +14,7 @@ We're crafting a Loom video for a clearer insight into our integrated solution. 
 
 ## 📅 Our Journey
 
-Peek into our hackathon memories, strategies, and deliberations in our [Compiled Virtual Meetings](https://drive.google.com/link-to-your-meetings-folder).
+Peek into our hackathon memories, strategies, and deliberations in our [Compiled Virtual Meetings](https://drive.google.com/file/d/1qCMH9KheaxXcAZRMXKbSMNzXt6FFUprI/view?usp=sharing).
 
 ## 🏁 Getting Started with the SDK
 
