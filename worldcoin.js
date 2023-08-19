@@ -12,28 +12,31 @@ async function generateProof(data, worldcoinProof) {
   
   let humanHasBeenVerified = false;
   
-  const reqBody = { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof }
-  fetch(`https://developer.worldcoin.org/api/v1/verify/${process.env.WORLDCOIN_APP_ID}`, {
+  // const reqBody = { action: process.env.WORLDCOIN_ACTION_NAME, signal: "", ...worldcoinProof }
+  const reqBody = {
+    merkle_root: worldcoinProof.merkle_root,
+    nullifier_hash: worldcoinProof.nullifier_hash,
+    proof: worldcoinProof.proof,
+    credential_type: worldcoinProof.credential_type,
+    action: process.env.WORLDCOIN_ACTION_NAME, 
+    signal: worldcoinProof.signal ?? "", // if we don't have a signal, use the empty string
+  };
+  
+  console.log("reqBody - " + JSON.stringify(reqBody))
+  const verifyRes = await fetch(`https://developer.worldcoin.org/api/v1/verify/${process.env.WORLDCOIN_APP_ID}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(reqBody), 
-  }).then((verifyRes) => {
-    verifyRes.json().then((wldResponse) => {
-      if (verifyRes.status == 200) {
-        humanHasBeenVerified = true;
-        res.status(verifyRes.status).send({ code: "success" });
-      } else {
-        // return the error code and detail from the World ID /verify endpoint to our frontend
-        res.status(verifyRes.status).send({ 
-          code: wldResponse.code, 
-          detail: wldResponse.detail 
-        });
-      }
-    });
   });
 
+  const wldResponse = await verifyRes.json();
+  console.log(verifyRes)
+  if (verifyRes.status === 200) {
+  console.log(verifyRes.status)
+    humanHasBeenVerified = true;
+  }
 
   if (!humanHasBeenVerified) {
     return null;

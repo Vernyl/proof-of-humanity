@@ -1,20 +1,56 @@
-# Proof of Humanity
+# Proof of Humanity: SDK + poh-validators-react Integration
 
-Proof of Humanity is a bot protection services SDK integrated with the HUMAN Protocol.
+Proof of Humanity is a bot protection services SDK integrated with the HUMAN Protocol. Utilize our SDK for backend verification, then implement our [`poh-validators-react`](https://npmjs.com/package/poh-validators-react) package to effortlessly embed human verification components in your React frontend.
 
-## How to Start Contributing
+![Example Image](./client-sdk/src/assets/human-2.png)
 
-1. Ask the Team Lead for the `.env file` to set up your development environment.
-2. Install the necessary dependencies by running the following command:
+## 📚 SDK Documentation (Beta)
+
+While we're perfecting our SDK documentation, you can delve into our current [Beta Documentation](https://poh-docs.netlify.app/).
+
+## 🎥 Understanding the Integration (Coming Soon)
+
+We're crafting a Loom video for a clearer insight into our integrated solution. Stay tuned! [Loom Video Explanation (In Progress)](https://loom.com/link-to-your-video).
+
+## 📅 Our Journey
+
+Peek into our hackathon memories, strategies, and deliberations in our [Compiled Virtual Meetings](https://drive.google.com/file/d/1qCMH9KheaxXcAZRMXKbSMNzXt6FFUprI/view?usp=sharing).
+
+## 🏁 Getting Started with the SDK
+
+### 🛠️ Setting Up the Backend
+
+1. To set up the backend, you'll need to create an `.env` file in the root directory of your project. Here's an example structure of the `.env` file:
+    
+    ```
+    VALIDATOR_WALLET_ADDRESS=<Your_Wallet_Address_Here>
+    VALIDATOR_PRIVATE_KEY=<Your_Private_Key_Here>
+    TELEGRAM_BOT_TOKEN=<Your_Telegram_Bot_Token_Here>
+    PASSAGE_APP_ID=<Your_Passage_App_ID_Here>
+    PASSAGE_API_KEY=<Your_Passage_API_Key_Here>
+    WORLDCOIN_ACTION_NAME=<Your_Worldcoin_Action_Name_Here>
+    WORLDCOIN_APP_ID=<Your_Worldcoin_App_ID_Here>
+    DATABASE_URL=<Your_Database_URL_Here>
+    ```
+    
+    Replace the placeholder values (`<...>`) with your own respective details.
+    
+    For contributors who already have a `.env` file provided by the team lead, you can skip this step.
+
+2. Install the necessary dependencies:
    ```bash
    yarn install
    ```
-3. Run the tests to ensure everything is working as expected:
+3. Run tests to ensure correct setup (known issues of failing tests, but can be ignored):
    ```bash
    yarn test
    ```
+3. Run development server:
+   ```bash
+   yarn dev
+   ```
 
-## Running the Humangram Bot Module
+### 🤖 Running the Humangram Bot Module
 To run the bot module and start using Humangram, follow these steps:
 
 1. Make sure you created and obtained the Telegram bot token from [BotFather](https://t.me/botfather).
@@ -32,7 +68,34 @@ The bot will start running, and you can interact with it on Telegram to perform 
 
 You can access our own Humangram bot [here](http://t.me/HumanityGuardBot).
 
-## Contribution Guidelines
+## 🔌 Integrate with poh-validators-react in your Frontend
+
+Once your backend is up and running with our SDK, enhance your frontend with our React components:
+
+1. Install the `poh-validators-react` package:
+   ```bash
+   npm install poh-validators-react
+   ```
+   or
+   ```bash
+   yarn add poh-validators-react
+   ```
+
+2. Start using our human verification components, such as `BiometricsValidator` and `HumangramValidator`, in your React applications. Detailed usage can be found in the [`poh-validators-react` README](https://npmjs.com/package/poh-validators-react).
+
+### 🚀 Contribute to the npm package
+
+For those who want to contribute to the npm package, ensure your `.env` file also includes the following:
+
+```
+STORYBOOK_WORLDCOIN_APP_ID=<Your_Storybook_Worldcoin_App_ID_Here>
+STORYBOOK_PASSAGE_APP_ID=<Your_Storybook_Passage_App_ID_Here>
+STORYBOOK_WEBSOCKET_SERVER_URL=<Your_Websocket_Server_URL_Here>
+```
+
+Replace the placeholder values (`<...>`) with your own respective details.
+
+## 🌟 Contribution Guidelines
 
 To contribute to the project, please follow these steps:
 
