@@ -24,6 +24,7 @@ app.post('/worldcoin/proof', async (req, res) => {
   try {
     const { data, worldcoinProof } = req.body;
     console.log("data - " + data)
+    console.log("worldcoinProof - " + JSON.stringify(worldcoinProof))
     const proof = await worldcoin.generateProof(data, worldcoinProof);
     res.json({ proof });
   } catch (error) {

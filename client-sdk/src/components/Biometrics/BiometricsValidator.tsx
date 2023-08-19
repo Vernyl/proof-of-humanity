@@ -56,7 +56,7 @@ function BiometricsValidator({ app_id, onProof, url }: BiometricsValidator) {
   }
 
   return (
-  <button onClick={handleVerify} type="button" disabled={isLoading} className="text-[#222222] bg-[#E9EFFF] hover:bg-[#B1B7C6]/30 focus:ring-4 focus:ring-[#2557D6]/50 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#2557D6]/10 mr-2 mb-2">
+  <button onClick={handleVerify} type="button" disabled={isLoading} className="text-gray-700 bg-[#E9EFFF] hover:bg-[#B1B7C6]/30 focus:ring-4 focus:ring-[#9152FF]/70 focus:outline-none font-medium rounded-lg text-sm px-7 py-2.5 text-center inline-flex items-center shadow-sm shadow-[#202020]/40 transition-all duration-100 dark:focus:ring-[#9152FF]/70">
   {!isLoading ? (<><svg className="h-4 w-4 mr-2" aria-hidden="true" xmlnsXlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 251" fill="none">
   <path opacity="0.8" d="M37.8419 71.6921L65.1425 87.4541C86.2537 99.6426 93.4921 126.639 81.3036 147.75C80.2315 149.607 79.045 151.353 77.7583 152.989L12.6182 115.381C8.67588 113.105 5.58417 109.922 3.44179 106.254C-0.964934 98.6912 -1.30613 89.0446 3.38448 80.9202C10.348 68.8591 25.7752 64.7254 37.8419 71.6921Z" fill="#3D53F6"></path>
   <path opacity="0.5" d="M37.8419 180.052L65.1425 164.29C86.2537 152.101 93.4921 125.105 81.3036 103.994C80.2315 102.137 79.045 100.391 77.7583 98.7544L12.6182 136.363C8.67588 138.639 5.58417 141.822 3.44179 145.49C-0.964934 153.053 -1.30613 162.699 3.38448 170.824C10.348 182.885 25.7752 187.019 37.8419 180.052Z" fill="#3D53F6"></path>
