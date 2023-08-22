@@ -8,9 +8,9 @@ Proof of Humanity is a bot protection services SDK integrated with the HUMAN Pro
 
 While we're perfecting our SDK documentation, you can delve into our current [Beta Documentation](https://poh-docs.netlify.app/).
 
-## 🎥 Understanding the Integration (Coming Soon)
+## 🎥 Project Walkthrough
 
-We're crafting a Loom video for a clearer insight into our integrated solution. Stay tuned! [Loom Video Explanation (In Progress)](https://loom.com/link-to-your-video).
+A [walkthrough video](https://www.loom.com/share/6364e69675584fa7801552ec3d4651a4?sid=d95b031d-3c48-4434-b309-64654c3728c4) for clearer insights into our integrated solution.
 
 ## 📅 Our Journey
 
