@@ -83,6 +83,12 @@ Once your backend is up and running with our SDK, enhance your frontend with our
 
 2. Start using our human verification components, such as `BiometricsValidator` and `HumangramValidator`, in your React applications. Detailed usage can be found in the [`poh-validators-react` README](https://npmjs.com/package/poh-validators-react).
 
+### 🚨 Critical Issue
+
+- **Package Breakage**: The `poh-validators-react` package, which is designed for React applications, currently has dependencies on certain Node.js-specific modules. This results in the package breaking when integrated into React applications in browser environments. Errors related to node modules like `stream` or `util` are indicative of this problem.
+  
+  We are actively addressing this critical issue. Please stay tuned for updates and check our documentation for any interim solutions.
+
 ### 🚀 Contribute to the npm package
 
 For those who want to contribute to the npm package, ensure your `.env` file also includes the following:
