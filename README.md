@@ -68,6 +68,14 @@ The bot will start running, and you can interact with it on Telegram to perform 
 
 You can access our own Humangram bot [here](http://t.me/HumanityGuardBot).
 
+### 📦 `poh-validators-react` package development
+Run and test the react component library in development with Storybook:
+   ```bash
+   cd client-sdk
+   yarn storybook
+   ```
+Feel free to contribute and improve on the npm package.
+
 ## 🔌 Integrate with poh-validators-react in your Frontend
 
 Once your backend is up and running with our SDK, enhance your frontend with our React components:
